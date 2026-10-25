@@ -1,9 +1,25 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+let client: SupabaseClient | undefined;
+
+// Client Components are also imported during prerendering. Defer client creation
+// until it is used so missing deployment configuration cannot crash the build.
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(_target, property) {
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error('Supabase configuration is missing. Configure the public Supabase environment variables and redeploy.');
+    }
+
+    client ??= createClient(supabaseUrl, supabaseAnonKey);
+    const value = Reflect.get(client, property);
+    return typeof value === 'function' ? value.bind(client) : value;
+  },
+});
 
 export const CARD_CATEGORIES = [
   'Pokémon',
