@@ -1,5 +1,6 @@
 import './globals.css';
 import Navbar from '@/components/Navbar';
+import ConfigurationBoundary from '@/components/ConfigurationBoundary';
 
 export const metadata = {
   title: 'Phygital Vault | Trading Card Marketplace',
@@ -14,8 +15,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-slate-950 text-slate-100 min-h-screen antialiased">
-        <Navbar />
-        <main>{children}</main>
+        <ConfigurationBoundary>
+          <Navbar />
+          <main>{children}</main>
+        </ConfigurationBoundary>
       </body>
     </html>
   );

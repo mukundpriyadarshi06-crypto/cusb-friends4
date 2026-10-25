@@ -2,6 +2,22 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Configure the existing Supabase integration before using the app. Set
+`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in a root
+`.env.local` file for local development, or in the Netlify project's environment
+variables for deployment. Use the public anonymous key, never a service-role key.
+These variables must be available during the build because Next.js embeds public
+configuration in the browser bundle. Redeploy after changing them.
+
+Without this configuration, the app displays a setup notice and does not attempt
+database or authentication requests. Imports and prerendering no longer create a
+Supabase client until it is used.
+
+On Netlify, use `npm run build` as the build command and `.next` as the publish
+directory. The project already includes Next.js and its build script; retain the
+installed versions rather than replacing them with the older example versions in
+the truncated deployment diagnosis. Netlify's Next.js Runtime handles deployment.
+
 First, run the development server:
 
 ```bash
